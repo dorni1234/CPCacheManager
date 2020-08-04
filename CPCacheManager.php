@@ -98,7 +98,7 @@ class CPCacheManager
      */
     public function getFromCache(string $transientName, string $cacheVersion = null)
     {
-        return get_transient($this->getTransientCacheName($transientName, $cacheVersion));
+        return CPCACHE ? get_transient($this->getTransientCacheName($transientName, $cacheVersion)) : false;
     }
 
     /**
