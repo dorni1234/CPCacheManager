@@ -7,7 +7,7 @@
  * Author URI:      https://coding-pioneers.com
  * Text Domain:     cp-cache-manager
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         0.2.0
  *
  * @package         CPCacheManager
  */
@@ -16,6 +16,8 @@ namespace CPCacheManager;
 
 use CPCacheManager\Helpers\VersionHelper;
 
+define('CPCACHE', get_option('cpcachemanager_enabled', false) ? true : false);
+
 /**
  * Class CPCacheManager.
  *
@@ -23,7 +25,7 @@ use CPCacheManager\Helpers\VersionHelper;
  * @company : Coding Pioneers GmbH (https://coding-pioneers.com)
  * @created : 04.08.20
  * @updated : 04.08.20
- * @version : 0.1
+ * @version : 0.2.0
  * @package CPCacheManager
  */
 class CPCacheManager
@@ -177,4 +179,33 @@ class CPCacheManager
         }
         return maybe_unserialize($cacheVersions);
     }
+
+    /**
+     * Activation hook.
+     */
+    public static function activationHook()
+    {
+        update_option('cpcachemanager_enabled', true);
+    }
+
+    /**
+     * Deactivation hook.
+     */
+    public static function deactivationHook()
+    {
+        update_option('cpcachemanager_enabled', false);
+    }
+
+    /**
+     * Uninstall hook.
+     */
+    public static function uninstallHook()
+    {
+        delete_option('cpcachemanager_enabled');
+        delete_option('cpcachemanager_cache_version');
+    }
 }
+
+register_activation_hook(__FILE__, [CPCacheManager::class, 'activationHook']);
+register_deactivation_hook(__FILE__, [CPCacheManager::class, 'deactivationHook']);
+register_uninstall_hook(__FILE__, [CPCacheManager::class, 'uninstallHook']);
